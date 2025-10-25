@@ -1,0 +1,144 @@
+{% comment %}
+  Best Sellers Product Gallery Section for Shopify
+{% endcomment %}
+
+<div class="best-sellers-section container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <div class="mobile-header md:hidden">
+      <h2 class="header-title font-bold source-serif-pro font-bold text-[#231f20]">{{ section.settings.title }}</h2>
+    </div>
+    <h2 class="header-title source-serif-pro text-[#231f20] hidden font-black md:block">{{ section.settings.title }}</h2>
+    {% if section.settings.show_shop_all_link %}
+      <a href="{{ section.settings.shop_all_url }}" class="shop-all-desktop shop-all-link poppins font-semibold hover:underline hidden md:block">
+        {{ section.settings.shop_all_text }} →
+      </a>
+    {% endif %}
+  </div>
+  
+  <div class="custom-scrollbar-container">
+    <div id="product-container-{{ section.id }}" class="product-grid scroll-container space-x-6 pb-2 md:pb-14 -mx-2 px-2">
+      {% for product in collections[section.settings.collection].products limit: section.settings.product_limit %}
+        {% assign is_best_seller = false %}
+        {% assign has_discount = false %}
+        
+        {% for tag in product.tags %}
+          {% if tag == 'best-seller' %}
+            {% assign is_best_seller = true %}
+          {% elsif tag contains 'discount' %}
+            {% assign has_discount = true %}
+          {% endif %}
+        {% endfor %}
+        
+        <div class="product-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg block">
+          {% if is_best_seller or has_discount %}
+            <div class="absolute top-2 left-2 flex gap-2">
+              {% if is_best_seller %}
+                <span class="bg-white rounded-[100px] text-[10px] text-black bebas-neue px-3 py-1">BEST SELLER</span>
+              {% endif %}
+              {% if has_discount %}
+                <span class="save-badge rounded-[100px] text-[10px] bebas-neue px-3 py-1">SAVE 15%</span>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          <div class="relative overflow-hidden image-container">
+            <img 
+              src="{{ product.featured_image | img_url: '600x600' }}" 
+              alt="{{ product.title }}" 
+              class="w-full h-full object-cover product-image transition-all duration-500"
+              data-primary="{{ product.featured_image | img_url: '600x600' }}"
+              data-secondary="{{ product.featured_image | img_url: '600x600' }}"
+              loading="lazy"
+            >
+          </div>
+          <div class="p-4">
+            <h3 class="product-title bebas-neue mb-2 tracking-[1px] text-[#1c1d1d]">{{ product.title }}</h3>
+            <div class="flex items-center mb-2">
+              <div class="star-rating gap-[2px] flex">
+                {% for i in (1..5) %}
+                  <i class="fas fa-star"></i>
+                {% endfor %}
+              </div>
+              <span class="reviews-text review-text poppins ml-2">{{ product.metafields.reviews.count | default: 0 }} Reviews</span>
+            </div>
+            <p class="text-[#1c1d1d] price-text poppins font-bold">{{ product.price | money }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="custom-scrollbar-track">
+      <div class="custom-scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  {% if section.settings.show_mobile_button %}
+    <div class="flex justify-center mt-6">
+      <button id="show-more-btn-{{ section.id }}" class="md:hidden show-more-btn bg-[#1C1D1D] text-white font-semibold w-full py-4 transition duration-300 transform hover:scale-105 poppins rounded-[100px]">
+        {{ section.settings.button_text }}
+      </button>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Best Sellers Gallery",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Number of Products",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shop_all_link",
+      "label": "Show 'Shop All' Link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shop_all_text",
+      "label": "'Shop All' Link Text",
+      "default": "Shop All Best Sellers"
+    },
+    {
+      "type": "url",
+      "id": "shop_all_url",
+      "label": "'Shop All' Link URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile_button",
+      "label": "Show 'Show More' Button on Mobile",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Show More"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Sellers Gallery",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

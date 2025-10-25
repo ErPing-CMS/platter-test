@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopify Best Sellers Section Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="best-sellers-section.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional styles for preview */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f8f8;
+        }
+        
+        .shopify-section {
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        } 
+    </style>
+</head>
+<body>
+    <div class="p-4"> 
+        
+        <div class="shopify-section w-full"> 
+            <!-- This is where the Shopify section would be rendered -->
+            <div class="best-sellers-section mx-auto md:container px-4 py-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="mobile-header md:hidden">
+                        <h2 class="header-title font-bold source-serif-pro font-bold text-[#231f20]">Best Sellers</h2>
+                    </div>
+                    <h2 class="header-title source-serif-pro text-[#231f20] hidden font-black md:block">Best Sellers</h2>
+                    <a href="#" class="shop-all-desktop shop-all-link poppins font-semibold hover:underline hidden md:block">
+                        Shop All Best Sellers →
+                    </a>
+                </div>
+                
+                <div class="custom-scrollbar-container">
+                    <div id="product-container-preview" class="product-grid scroll-container space-x-6 pb-2 md:pb-14 -mx-2 px-2">
+                        <!-- Product cards will be dynamically inserted here -->
+                    </div>
+                    <div class="custom-scrollbar-track">
+                        <div class="custom-scrollbar-thumb"></div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center mt-6">
+                    <button id="show-more-btn-preview" class="md:hidden show-more-btn bg-[#1C1D1D] text-white font-semibold w-full py-4 transition duration-300 transform hover:scale-105 poppins rounded-[100px]">
+                        Show More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data to simulate Shopify products
+        const products = [
+            {
+                id: 1,
+                title: "UltraBook Pro Laptop",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=600&h=600",
+                tags: ["best-seller"]
+            },
+            {
+                id: 2,
+                title: "Smartphone X Pro",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1595941069915-4ebc5197c14a?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1656392851225-ec9a304ef9d0?auto=format&fit=crop&w=600&h=600",
+                tags: ["best-seller"]
+            },
+            {
+                id: 3,
+                title: "Wireless Earbuds Elite",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&h=600",
+                tags: ["discount"]
+            },
+            {
+                id: 4,
+                title: "Gaming Mechanical Keyboard",
+                price: "$104.95",
+                featured_image: "https://plus.unsplash.com/premium_photo-1680124608003-b14fe079b955?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1643869094356-4dc3f74f22eb?auto=format&fit=crop&w=600&h=600",
+                tags: ["best-seller"]
+            },
+            {
+                id: 5,
+                title: "Fitness Tracker Watch",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=600&h=600",
+                tags: ["discount"]
+            },
+            {
+                id: 6,
+                title: "4K Action Camera",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1562878671-b3efe27953b9?auto=format&fit=crop&w=600&h=600",
+                tags: ["best-seller"]
+            },
+            {
+                id: 7,
+                title: "Bluetooth Noise Cancelling Headphones",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1656457537704-11f3bcaee2fd?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1625245488600-f03fef636a3c?auto=format&fit=crop&w=600&h=600",
+                tags: ["discount"]
+            },
+            {
+                id: 8,
+                title: "Smart Home Hub",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1758577515339-93872db0d37e?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://plus.unsplash.com/premium_photo-1663075936658-11cfc7d6a5d6?auto=format&fit=crop&w=600&h=600",
+                tags: ["best-seller"]
+            },
+            {
+                id: 9,
+                title: "Portable External SSD",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1577538926210-fc6cc624fde2?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1610415392843-30d95191b7e4?auto=format&fit=crop&w=600&h=600",
+                tags: ["discount"]
+            },
+            {
+                id: 10,
+                title: "Wireless Charging Station",
+                price: "$104.95",
+                featured_image: "https://images.unsplash.com/photo-1657049016119-09e5584562ae?auto=format&fit=crop&w=600&h=600",
+                secondary_image: "https://images.unsplash.com/photo-1738101001619-f0fd42ceafb0?auto=format&fit=crop&w=600&h=600",
+                tags: ["best-seller"]
+            }
+        ];
+
+        // Function to check if product has a specific tag
+        function hasTag(product, tag) {
+            return product.tags && product.tags.includes(tag);
+        }
+
+        // Function to create a product card
+        function createProductCard(product, isVisible = true) {
+            const isBestSeller = hasTag(product, 'best-seller');
+            const hasDiscount = hasTag(product, 'discount');
+            
+            const card = document.createElement('div');
+            card.className = `product-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg ${isVisible ? 'block' : 'hidden md:block'}`;
+            
+            // Create badge HTML
+            let badgeHTML = '';
+            if (isBestSeller || hasDiscount) {
+                badgeHTML += '<div class="absolute top-2 left-2 flex gap-2">';
+                if (isBestSeller) {
+                    badgeHTML += '<span class="bg-white rounded-[100px] text-[10px] text-black bebas-neue px-3 py-1">BEST SELLER</span>';
+                }
+                if (hasDiscount) {
+                    badgeHTML += '<span class="save-badge rounded-[100px] text-[10px] bebas-neue px-3 py-1">SAVE 15%</span>';
+                }
+                badgeHTML += '</div>';
+            }
+            
+            card.innerHTML = `
+                ${badgeHTML}
+                <div class="relative overflow-hidden image-container">
+                    <img 
+                        src="${product.featured_image}" 
+                        alt="${product.title}" 
+                        class="w-full h-full object-cover product-image transition-all duration-500"
+                        data-primary="${product.featured_image}"
+                        data-secondary="${product.secondary_image}"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="p-4">
+                    <h3 class="product-title bebas-neue mb-2 tracking-[1px] text-[#1c1d1d]">${product.title}</h3>
+                    <div class="flex items-center mb-2">
+                        <div class="star-rating gap-[2px] flex">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="reviews-text review-text poppins ml-2">1,234 Reviews</span>
+                    </div>
+                    <p class="text-[#1c1d1d] price-text poppins font-bold">${product.price}</p>
+                </div>
+            `;
+            
+            const img = card.querySelector('.product-image');
+            
+            let hoverTimeout;
+            img.addEventListener('mouseenter', function() {
+                cancelAnimationFrame(hoverTimeout);
+                this.classList.add('opacity-90');
+                hoverTimeout = requestAnimationFrame(() => {
+                    this.src = this.dataset.secondary;
+                });
+            });
+            
+            img.addEventListener('mouseleave', function() {
+                cancelAnimationFrame(hoverTimeout);
+                this.classList.remove('opacity-90');
+                hoverTimeout = requestAnimationFrame(() => {
+                    this.src = this.dataset.primary;
+                });
+            });
+            
+            // Add touch events for mobile
+            let touchTimeout;
+            img.addEventListener('touchstart', function(e) { 
+                e.preventDefault();
+                this.classList.add('opacity-90');
+                cancelAnimationFrame(touchTimeout);
+                touchTimeout = requestAnimationFrame(() => {
+                    this.src = this.dataset.secondary;
+                });
+            });
+            
+            img.addEventListener('touchend', function() {
+                this.classList.remove('opacity-90');
+                cancelAnimationFrame(touchTimeout);
+                touchTimeout = requestAnimationFrame(() => {
+                    this.src = this.dataset.primary;
+                });
+            });
+            
+            return card;
+        }
+
+        // Function to render product cards
+        function renderProducts() {
+            const container = document.getElementById('product-container-preview');
+            container.innerHTML = '';
+            
+            const fragment = document.createDocumentFragment();
+            
+            products.forEach((product, index) => {
+                // On mobile, only show first 4 products initially
+                const isVisible = index < 4;
+                const card = createProductCard(product, isVisible);
+                
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                fragment.appendChild(card);
+                
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 50);
+                });
+            });
+            
+            container.appendChild(fragment);
+        }
+
+        // Function to show all products with animation
+        function showAllProducts() {
+            const hiddenCards = document.querySelectorAll('#product-container-preview .product-card.hidden');
+            
+            hiddenCards.forEach((card, index) => { 
+                card.classList.remove('hidden');
+                
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                void card.offsetWidth;
+                
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 50);
+                });
+            });
+            
+            // Hide the show more button with fade out effect
+            const showMoreBtn = document.getElementById('show-more-btn-preview');
+            if (showMoreBtn) {
+                showMoreBtn.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                showMoreBtn.style.opacity = '0';
+                showMoreBtn.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    showMoreBtn.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Initialize custom scrollbar
+        function initCustomScrollbar() {
+            const scrollContainer = document.querySelector('.scroll-container');
+            const scrollbarContainer = document.querySelector('.custom-scrollbar-container');
+            const scrollbarTrack = document.querySelector('.custom-scrollbar-track');
+            const scrollbarThumb = document.querySelector('.custom-scrollbar-thumb');
+            
+            if (!scrollContainer || !scrollbarContainer || !scrollbarTrack || !scrollbarThumb) {
+                return;
+            }
+            
+            let isDragging = false;
+            let startX = 0;
+            let scrollLeft = 0;
+            let thumbLeft = 0;
+             
+            function updateScrollbar() {
+                const containerWidth = scrollContainer.clientWidth;
+                const contentWidth = scrollContainer.scrollWidth;
+                const scrollLeft = scrollContainer.scrollLeft;
+                 
+                const thumbWidth = Math.max((containerWidth / contentWidth) * containerWidth, 30);
+                 
+                const maxThumbLeft = containerWidth - thumbWidth;
+                const thumbLeftPosition = (scrollLeft / (contentWidth - containerWidth)) * maxThumbLeft;
+                 
+                scrollbarThumb.style.width = thumbWidth + 'px';
+                scrollbarThumb.style.left = thumbLeftPosition + 'px';
+                 
+                if (contentWidth <= containerWidth) {
+                    scrollbarTrack.style.display = 'none';
+                } else {
+                    scrollbarTrack.style.display = 'block';
+                }
+            }
+             
+            scrollContainer.addEventListener('scroll', updateScrollbar);
+             
+            window.addEventListener('resize', updateScrollbar);
+             
+            updateScrollbar();
+             
+            scrollbarContainer.addEventListener('mouseenter', () => {
+                scrollbarContainer.classList.add('scrolling');
+            });
+            
+            scrollbarContainer.addEventListener('mouseleave', () => {
+                if (!isDragging) {
+                    scrollbarContainer.classList.remove('scrolling');
+                }
+            });
+             
+            scrollbarThumb.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                scrollLeft = scrollContainer.scrollLeft;
+                thumbLeft = parseFloat(scrollbarThumb.style.left) || 0;
+                
+                scrollbarContainer.classList.add('scrolling');
+                e.preventDefault();
+            });
+             
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - startX;
+                const containerWidth = scrollContainer.clientWidth;
+                const contentWidth = scrollContainer.scrollWidth;
+                const thumbWidth = parseFloat(scrollbarThumb.style.width);
+                const maxThumbLeft = containerWidth - thumbWidth;
+                
+                // Calculate new thumb position
+                const newThumbLeft = Math.max(0, Math.min(maxThumbLeft, thumbLeft + deltaX));
+                
+                // Calculate corresponding scroll position
+                const scrollRatio = newThumbLeft / maxThumbLeft;
+                const newScrollLeft = scrollRatio * (contentWidth - containerWidth);
+                
+                scrollContainer.scrollLeft = newScrollLeft;
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    scrollbarContainer.classList.remove('scrolling');
+                }
+            });
+             
+            // Handle touch events for mobile
+            let touchStartX = 0;
+            let touchScrollLeft = 0;
+            let isTouching = false;
+            
+            // Add touch support for scrollbar
+            scrollbarThumb.addEventListener('touchstart', (e) => {
+                isTouching = true;
+                scrollbarContainer.classList.add('touching');
+                touchStartX = e.touches[0].clientX;
+                touchScrollLeft = scrollContainer.scrollLeft;
+                e.stopPropagation();
+            });
+            
+            scrollbarThumb.addEventListener('touchmove', (e) => {
+                if (!isTouching) return;
+                
+                const touchX = e.touches[0].clientX;
+                const deltaX = touchStartX - touchX;
+                scrollContainer.scrollLeft = touchScrollLeft + deltaX;
+                e.stopPropagation();
+            });
+            
+            scrollbarThumb.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    isTouching = false;
+                    scrollbarContainer.classList.remove('touching');
+                }, 300);
+            });
+            
+            // Add touch support for scroll container
+            scrollContainer.addEventListener('touchstart', (e) => {
+                isTouching = true;
+                scrollbarContainer.classList.add('touching');
+                touchStartX = e.touches[0].clientX;
+                touchScrollLeft = scrollContainer.scrollLeft;
+            });
+            
+            scrollContainer.addEventListener('touchmove', (e) => {
+                if (!isTouching) return;
+                
+                const touchX = e.touches[0].clientX;
+                const deltaX = touchStartX - touchX;
+                scrollContainer.scrollLeft = touchScrollLeft + deltaX;
+            });
+            
+            scrollContainer.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    isTouching = false;
+                    scrollbarContainer.classList.remove('touching');
+                }, 300);
+            });
+             
+            // Handle track clicks
+            scrollbarTrack.addEventListener('click', (e) => {
+                if (e.target === scrollbarThumb) return;
+                
+                const trackRect = scrollbarTrack.getBoundingClientRect();
+                const clickX = e.clientX - trackRect.left;
+                const thumbWidth = parseFloat(scrollbarThumb.style.width);
+                const containerWidth = scrollContainer.clientWidth;
+                const contentWidth = scrollContainer.scrollWidth;
+                
+                const newThumbLeft = Math.max(0, Math.min(containerWidth - thumbWidth, clickX - thumbWidth / 2));
+                
+                const scrollRatio = newThumbLeft / (containerWidth - thumbWidth);
+                const newScrollLeft = scrollRatio * (contentWidth - containerWidth);
+                
+                scrollContainer.scrollTo({
+                    left: newScrollLeft,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            
+            // Add event listener to show more button
+            const showMoreBtn = document.getElementById('show-more-btn-preview');
+            if (showMoreBtn) {
+                showMoreBtn.addEventListener('click', showAllProducts);
+            }
+            
+            // Initialize custom scrollbar
+            initCustomScrollbar();
+        });
+    </script>
+</body>
+</html>
