@@ -177,6 +177,23 @@ function createProductCard(product, isVisible = true) {
         }, 100);
     });
     
+    // Add touch events for mobile
+    img.addEventListener('touchstart', function(e) {
+        // Prevent scrolling when touching the image
+        e.preventDefault();
+        this.classList.add('opacity-90');
+        setTimeout(() => {
+            this.src = this.dataset.secondary;
+        }, 100);
+    });
+    
+    img.addEventListener('touchend', function() {
+        this.classList.remove('opacity-90');
+        setTimeout(() => {
+            this.src = this.dataset.primary;
+        }, 100);
+    });
+    
     return card;
 }
 
@@ -209,17 +226,38 @@ function showAllProducts() {
         card.style.opacity = '1';
         card.style.transform = 'translateY(0)';
     });
-    
+     
     // Hide the show more button with fade out effect
     const showMoreBtn = document.getElementById('show-more-btn');
-    showMoreBtn.style.transition = 'opacity 0.3s ease';
-    showMoreBtn.style.opacity = '0';
-    
-    setTimeout(() => {
-        showMoreBtn.style.display = 'none';
-    }, 300);
+    if (showMoreBtn) {
+        showMoreBtn.style.transition = 'opacity 0.3s ease';
+        showMoreBtn.style.opacity = '0';
+        
+        setTimeout(() => {
+            showMoreBtn.style.display = 'none';
+        }, 300);
+    }
 }
- 
+
+// Add touch support for the show more button
+function initTouchSupport() {
+    const showMoreBtn = document.getElementById('show-more-btn');
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('touchstart', function(e) {
+            // Add visual feedback for touch
+            this.style.transform = 'scale(0.95)';
+        });
+        
+        showMoreBtn.addEventListener('touchend', function(e) {
+            // Remove visual feedback
+            this.style.transform = 'scale(1)';
+            // Trigger click event
+            this.click();
+        });
+    }
+}
+
+// Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     renderProducts();
     
@@ -228,6 +266,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (showMoreBtn) {
         showMoreBtn.addEventListener('click', showAllProducts);
     }
+    
+    // Initialize touch support
+    initTouchSupport();
     
     // Initialize custom scrollbar
     initCustomScrollbar();
@@ -290,8 +331,7 @@ function initCustomScrollbar() {
             scrollbarContainer.classList.remove('scrolling');
         }
     });
-    
-    // Handle thumb drag
+     
     scrollbarThumb.addEventListener('mousedown', (e) => {
         isDragging = true;
         startX = e.clientX;
@@ -301,7 +341,7 @@ function initCustomScrollbar() {
         scrollbarContainer.classList.add('scrolling');
         e.preventDefault();
     });
-    
+     
     document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         
@@ -328,10 +368,37 @@ function initCustomScrollbar() {
         }
     });
      
+    // Handle touch events for mobile
     let touchStartX = 0;
     let touchScrollLeft = 0;
     let isTouching = false;
     
+    // Add touch support for scrollbar
+    scrollbarThumb.addEventListener('touchstart', (e) => {
+        isTouching = true;
+        scrollbarContainer.classList.add('touching');
+        touchStartX = e.touches[0].clientX;
+        touchScrollLeft = scrollContainer.scrollLeft;
+        e.stopPropagation();
+    });
+    
+    scrollbarThumb.addEventListener('touchmove', (e) => {
+        if (!isTouching) return;
+        
+        const touchX = e.touches[0].clientX;
+        const deltaX = touchStartX - touchX;
+        scrollContainer.scrollLeft = touchScrollLeft + deltaX;
+        e.stopPropagation();
+    });
+    
+    scrollbarThumb.addEventListener('touchend', () => {
+        setTimeout(() => {
+            isTouching = false;
+            scrollbarContainer.classList.remove('touching');
+        }, 300);
+    });
+    
+    // Add touch support for scroll container
     scrollContainer.addEventListener('touchstart', (e) => {
         isTouching = true;
         scrollbarContainer.classList.add('touching');
@@ -353,7 +420,7 @@ function initCustomScrollbar() {
             scrollbarContainer.classList.remove('touching');
         }, 300);
     });
-    
+     
     // Handle track clicks
     scrollbarTrack.addEventListener('click', (e) => {
         if (e.target === scrollbarThumb) return;
