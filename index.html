@@ -20,13 +20,14 @@
             font-family: 'Poppins', sans-serif;
         }
         
-        /* Hide default browser scrollbars */
+        /* Hide default browser scrollbars with vendor prefixes */
         .scroll-container {
+            -webkit-overflow-scrolling: touch;
             -webkit-scrollbar: none;
             -ms-overflow-style: none;
             scrollbar-width: none; 
         }
-        
+         
         .scroll-container::-webkit-scrollbar {
             display: none;
         }
@@ -41,11 +42,14 @@
             left: 0;
             right: 0;
             height: 8px;
-            background: #ddd6d7 ;
+            background: #ddd6d7;
             border-radius: 4px;
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
+            -webkit-transition: opacity 0.3s ease;
+            -moz-transition: opacity 0.3s ease;
+            -o-transition: opacity 0.3s ease;
         }
          
         .custom-scrollbar-thumb {
@@ -57,15 +61,16 @@
             cursor: pointer;
             transition: all 0.3s ease;
             pointer-events: auto;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
         }
-        
-        /* Show scrollbar on hover/interaction */
+         
         .custom-scrollbar-container:hover .custom-scrollbar-track,
         .custom-scrollbar-container.scrolling .custom-scrollbar-track {
             opacity: 1;
         }
-        
-        /* Expand thumb on hover/interaction */
+         
         .custom-scrollbar-container:hover .custom-scrollbar-thumb,
         .custom-scrollbar-container.scrolling .custom-scrollbar-thumb {
             height: 6px;
@@ -87,6 +92,9 @@
          
         .product-image {
             transition: opacity 0.3s ease-in-out;
+            -webkit-transition: opacity 0.3s ease-in-out;
+            -moz-transition: opacity 0.3s ease-in-out;
+            -o-transition: opacity 0.3s ease-in-out;
         }
          
         .star-rating {
@@ -101,9 +109,16 @@
          
         .shop-all-link {
             color: #5C553A;
+            transition: all 0.3s ease;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
         }
         
-        /* Save 15% badge styling */
+        .shop-all-link:hover {
+            color: #4a442e;
+        }
+         
         .save-badge {
             background-color: #5C7962;
             color: white;
@@ -125,12 +140,38 @@
             max-width: 355px;
             min-width: 158px;
             position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            -webkit-transition: transform 0.3s ease, box-shadow 0.3s ease;
+            -moz-transition: transform 0.3s ease, box-shadow 0.3s ease;
+            -o-transition: transform 0.3s ease, box-shadow 0.3s ease;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
         }
         
+        .product-card:hover {
+            -webkit-transform: translateY(-5px);
+            -moz-transform: translateY(-5px);
+            -o-transform: translateY(-5px);
+            transform: translateY(-5px);
+        }
+         
         /* Badge positioning */
         .product-card > span.absolute {
             z-index: 10;
             top: 0.5rem !important;
+            transition: all 0.3s ease;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
+        }
+        
+        .product-card > span.absolute:hover {
+            -webkit-transform: scale(1.05);
+            -moz-transform: scale(1.05);
+            -o-transform: scale(1.05);
+            transform: scale(1.05);
         }
         
         .product-card > span.absolute.left-2 {
@@ -141,7 +182,6 @@
         .product-card > span.absolute.right-2 {
             right: 1rem !important;
             border: #000000 solid 1px;
-
         }
          
         .header-title {
@@ -153,30 +193,42 @@
         .shop-all-desktop {
             font-size: 14px;
             white-space: nowrap;
+            transition: all 0.3s ease;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
         }
-        
-        /* Mobile grid layout */
+         
         @media (max-width: 768px) {
             .product-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 1rem;
+                -webkit-display: grid;
+                -moz-display: grid;
+                -o-display: grid;
             }
-             
+              
             .product-grid.space-x-6 {
                 gap: 1rem;
             }
-            
+             
             .product-grid > * {
                 margin-left: 0 !important;
                 margin-right: 0 !important;
             }
-              
+               
              
             .mobile-header {
                 display: flex;
                 justify-content: center;
                 width: 100%;
+                -webkit-display: flex;
+                -webkit-justify-content: center;
+                -moz-display: flex;
+                -moz-justify-content: center;
+                -o-display: flex;
+                -o-justify-content: center;
             }
              
             .product-title {
@@ -194,18 +246,22 @@
             .scroll-container {
                 overflow-x: hidden;
             }
-            
-            /* Hide custom scrollbar on mobile */
+             
             .custom-scrollbar-track {
                 display: none;
             }
         }
-        
-        /* Desktop horizontal layout */
+         
         @media (min-width: 768px) {
             .product-grid {
                 display: flex;
                 overflow-x: auto;
+                -webkit-display: flex;
+                -webkit-overflow-x: auto;
+                -moz-display: flex;
+                -moz-overflow-x: auto;
+                -o-display: flex;
+                -o-overflow-x: auto;
             }
              
             .custom-scrollbar-track {
@@ -219,6 +275,9 @@
              
             .shop-all-desktop {
                 display: block;
+                -webkit-display: block;
+                -moz-display: block;
+                -o-display: block;
             }
              
             .image-container {
@@ -226,11 +285,14 @@
                 height: 355px;
                 min-width: 355px;
             }
-            
+             
             .product-card {
                 flex: 0 0 auto;
                 width: 355px;
                 min-width: 355px;
+                -webkit-flex: 0 0 auto;
+                -moz-flex: 0 0 auto;
+                -o-flex: 0 0 auto;
             }
              
             .star-rating i {
@@ -262,6 +324,42 @@
                 padding-right: 1rem;
             }
         }
+        
+        /* Enhanced button styles with vendor prefixes */
+        .show-more-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
+            -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .show-more-btn:hover {
+            -webkit-transform: translateY(-2px);
+            -moz-transform: translateY(-2px);
+            -o-transform: translateY(-2px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            -webkit-box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            -moz-box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .show-more-btn:active {
+            -webkit-transform: translateY(0);
+            -moz-transform: translateY(0);
+            -o-transform: translateY(0);
+            transform: translateY(0);
+        }
+        
+        /* Fallback for aspect-ratio */
+        @supports not (aspect-ratio: 158/159) {
+            .image-container {
+                height: 0;
+                padding-bottom: 100.63%; /* 159/158 * 100 */
+            }
+        }
     </style>
 </head>
 <body>
@@ -284,7 +382,7 @@
         </div>
         
         <div class="flex justify-center mt-6">
-            <button id="show-more-btn" class="md:hidden bg-[#1C1D1D] text-white font-semibold w-full py-4 transition duration-300 transform hover:scale-105 poppins rounded-[100px]">
+            <button id="show-more-btn" class="md:hidden show-more-btn bg-[#1C1D1D] text-white font-semibold w-full py-4 transition duration-300 transform hover:scale-105 poppins rounded-[100px]">
                 Show More
             </button>
         </div>

@@ -178,8 +178,7 @@ function createProductCard(product, isVisible = true) {
     });
     
     // Add touch events for mobile
-    img.addEventListener('touchstart', function(e) {
-        // Prevent scrolling when touching the image
+    img.addEventListener('touchstart', function(e) { 
         e.preventDefault();
         this.classList.add('opacity-90');
         setTimeout(() => {
@@ -191,6 +190,14 @@ function createProductCard(product, isVisible = true) {
         this.classList.remove('opacity-90');
         setTimeout(() => {
             this.src = this.dataset.primary;
+        }, 100);
+    });
+    
+    // Add click effect for better feedback
+    card.addEventListener('click', function() {
+        this.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            this.style.transform = '';
         }, 100);
     });
     
@@ -206,7 +213,17 @@ function renderProducts() {
         // On mobile, only show first 4 products initially
         const isVisible = index < 4;
         const card = createProductCard(product, isVisible);
+         
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+         
         container.appendChild(card);
+         
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
     });
 }
 
@@ -221,17 +238,20 @@ function showAllProducts() {
         card.style.transform = 'translateY(20px)';
          
         void card.offsetWidth;
-         
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0)';
+          
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
     });
      
     // Hide the show more button with fade out effect
     const showMoreBtn = document.getElementById('show-more-btn');
     if (showMoreBtn) {
-        showMoreBtn.style.transition = 'opacity 0.3s ease';
+        showMoreBtn.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
         showMoreBtn.style.opacity = '0';
+        showMoreBtn.style.transform = 'translateY(10px)';
         
         setTimeout(() => {
             showMoreBtn.style.display = 'none';
@@ -257,6 +277,45 @@ function initTouchSupport() {
     }
 }
 
+// Add enhanced interactivity
+function addEnhancedInteractivity() {
+    // Add hover effects to shop all link
+    const shopAllLink = document.querySelector('.shop-all-link');
+    if (shopAllLink) {
+        shopAllLink.addEventListener('mouseenter', function() {
+            this.style.color = '#4a442e';
+        });
+        
+        shopAllLink.addEventListener('mouseleave', function() {
+            this.style.color = '#5C553A';
+        });
+    }
+}
+
+// Cross-browser compatible scrollTo function
+function scrollToElement(element, to, duration) {
+    if (duration <= 0) return;
+    
+    const difference = to - element.scrollLeft;
+    const perTick = difference / duration * 10;
+    
+    setTimeout(function() {
+        element.scrollLeft = element.scrollLeft + perTick;
+        if (element.scrollLeft === to) return;
+        scrollToElement(element, to, duration - 10);
+    }, 10);
+}
+
+// Cross-browser compatible getComputedStyle
+function getStyle(el, styleProp) {
+    if (el.currentStyle) {
+        return el.currentStyle[styleProp];
+    } else if (window.getComputedStyle) {
+        return document.defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
+    }
+    return el.style[styleProp];
+}
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     renderProducts();
@@ -270,6 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize touch support
     initTouchSupport();
     
+    // Add enhanced interactivity
+    addEnhancedInteractivity();
+    
     // Initialize custom scrollbar
     initCustomScrollbar();
     
@@ -277,6 +339,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const fontAwesome = document.createElement('link');
     fontAwesome.rel = 'stylesheet';
     fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+    
+    // Add fallback for Font Awesome
+    fontAwesome.onerror = function() {
+        console.warn('Font Awesome failed to load, using fallback');
+        // Fallback styles for stars
+        const fallbackStyle = document.createElement('style');
+        fallbackStyle.textContent = `
+            .star-rating i.fas.fa-star:before { content: '★'; }
+            .star-rating i.far.fa-star:before { content: '☆'; }
+        `;
+        document.head.appendChild(fallbackStyle);
+    };
+    
     document.head.appendChild(fontAwesome);
 });
 
@@ -421,7 +496,7 @@ function initCustomScrollbar() {
         }, 300);
     });
      
-    // Handle track clicks
+    // Handle track clicks with cross-browser compatibility
     scrollbarTrack.addEventListener('click', (e) => {
         if (e.target === scrollbarThumb) return;
         
@@ -436,9 +511,13 @@ function initCustomScrollbar() {
         const scrollRatio = newThumbLeft / (containerWidth - thumbWidth);
         const newScrollLeft = scrollRatio * (contentWidth - containerWidth);
         
-        scrollContainer.scrollTo({
-            left: newScrollLeft,
-            behavior: 'smooth'
-        });
+        if (scrollContainer.scrollTo) {
+            scrollContainer.scrollTo({
+                left: newScrollLeft,
+                behavior: 'smooth'
+            });
+        } else {
+            scrollToElement(scrollContainer, newScrollLeft, 300);
+        }
     });
 }
