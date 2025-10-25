@@ -3,81 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Best Sellers Product Gallery</title>
-    
-    <!-- Import TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Import Required Google Fonts -->
+    <title>Best Sellers</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins&family=Source+Serif+Pro&display=swap" rel="stylesheet">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom font classes */
-        .font-source-serif { font-family: 'Source Serif Pro', serif; }
-        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
-        .font-poppins { font-family: 'Poppins', sans-serif; }
-        
-        /* Brand color palette */
-        :root {
-            --brand-dark: #231F20;
-            --brand-link: #5C553A;
-            --brand-save: #5C7962;
-            --brand-review: #707070;
+        /* Custom fonts */
+        .source-serif-pro {
+            font-family: 'Source Serif Pro', serif;
         }
         
-        /* Base styles for the project */
-        .container {
-            @apply mx-auto px-4 py-8 max-w-7xl;
+        .bebas-neue {
+            font-family: 'Bebas Neue', sans-serif;
         }
         
-        /* Custom styles for product cards */
+        .poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Hide default browser scrollbars */
+        .scroll-container {
+            -webkit-scrollbar: none;
+            -ms-overflow-style: none;
+            scrollbar-width: none; 
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+         
+        .custom-scrollbar-container {
+            position: relative;
+        }
+         
+        .custom-scrollbar-track {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: #ddd6d7 ;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+         
+        .custom-scrollbar-thumb {
+            position: absolute;
+            top: 2px;
+            height: 6px;
+            background: #c5c5c5;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        
+        /* Show scrollbar on hover/interaction */
+        .custom-scrollbar-container:hover .custom-scrollbar-track,
+        .custom-scrollbar-container.scrolling .custom-scrollbar-track {
+            opacity: 1;
+        }
+        
+        /* Expand thumb on hover/interaction */
+        .custom-scrollbar-container:hover .custom-scrollbar-thumb,
+        .custom-scrollbar-container.scrolling .custom-scrollbar-thumb {
+            height: 6px;
+            top: 1px;
+            background: #231F20;
+        }
+         
+        @media (hover: none) and (pointer: coarse) {
+            .custom-scrollbar-container.touching .custom-scrollbar-track {
+                opacity: 1;
+            }
+            
+            .custom-scrollbar-container.touching .custom-scrollbar-thumb {
+                height: 6px;
+                top: 1px;
+                background: #231F20;
+            }
+        }
+         
         .product-image {
             transition: opacity 0.3s ease-in-out;
         }
-        
-        /* Badge styling */
-        .bg-brand-save {
-            background-color: var(--brand-save);
+         
+        .star-rating {
+            color: #000000;
+        }
+         
+        .star-rating i {
+            font-size: 9px;
+            width: 9px;
+            height: 9px;
+        }
+         
+        .shop-all-link {
+            color: #5C553A;
         }
         
-        .text-brand-dark {
-            color: var(--brand-dark);
+        /* Save 15% badge styling */
+        .save-badge {
+            background-color: #5C7962;
+            color: white;
+        }
+         
+        .reviews-text {
+            color: #707070;
+        }
+         
+        .image-container {
+            width: 100%;
+            max-width: 355px;
+            min-width: 158px;
+            aspect-ratio: 158/159;
+        }
+         
+        .product-card {
+            width: 100%;
+            max-width: 355px;
+            min-width: 158px;
+            position: relative;
         }
         
-        .text-brand-review {
-            color: var(--brand-review);
+        /* Badge positioning */
+        .product-card > span.absolute {
+            z-index: 10;
+            top: 0.5rem !important;
+        }
+        
+        .product-card > span.absolute.left-2 {
+            left: 0.5rem !important;
+            border: #000000 solid 1px;
+        }
+        
+        .product-card > span.absolute.right-2 {
+            right: 1rem !important;
+            border: #000000 solid 1px;
+
+        }
+         
+        .header-title {
+            font-size: 28px;
+            text-align: center;
+            width: 100%;
+        }
+         
+        .shop-all-desktop {
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        /* Mobile grid layout */
+        @media (max-width: 768px) {
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+             
+            .product-grid.space-x-6 {
+                gap: 1rem;
+            }
+            
+            .product-grid > * {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+              
+             
+            .mobile-header {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+             
+            .product-title {
+                font-size: 16px;
+            }
+             
+            .review-text {
+                font-size: 11px;
+            }
+             
+            .price-text {
+                font-size: 16px;
+            }
+             
+            .scroll-container {
+                overflow-x: hidden;
+            }
+            
+            /* Hide custom scrollbar on mobile */
+            .custom-scrollbar-track {
+                display: none;
+            }
+        }
+        
+        /* Desktop horizontal layout */
+        @media (min-width: 768px) {
+            .product-grid {
+                display: flex;
+                overflow-x: auto;
+            }
+             
+            .custom-scrollbar-track {
+                display: block;
+            }
+             
+            .header-title {
+                font-size: 40px;
+                text-align: left;
+            }
+             
+            .shop-all-desktop {
+                display: block;
+            }
+             
+            .image-container {
+                width: 355px;
+                height: 355px;
+                min-width: 355px;
+            }
+            
+            .product-card {
+                flex: 0 0 auto;
+                width: 355px;
+                min-width: 355px;
+            }
+             
+            .star-rating i {
+                font-size: 12px;
+                width: 12px;
+                height: 12px;
+            }
+             
+            .product-title {
+                font-size: 18px;
+            }
+             
+            .review-text {
+                font-size: 12px;
+            }
+             
+            .price-text {
+                font-size: 16px;
+            }
+        }
+         
+        @media (max-width: 380px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 
-        Project structure:
-        - Header with title and shop link
-        - Main product gallery container
-        - Footer with mobile show more button
-    -->
-    <div class="container">
-        <header>
-            <h1>Best Sellers</h1>
-            <!-- Shop link -->
-        </header>
-        
-        <main>
-            <!-- Horizontal scrolling product cards -->
-            <div id="product-gallery">
-                <!-- Horizontal scrolling product cards -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <div class="mobile-header md:hidden">
+                <h1 class="header-title font-bold source-serif-pro font-bold text-[#231f20]">Best Sellers</h1>
             </div>
-        </main>
+            <h1 class="header-title source-serif-pro text-[#231f20] hidden font-black md:block">Best Sellers</h1>
+            <a href="#" class="shop-all-desktop shop-all-link poppins font-semibold hover:underline hidden md:block">Shop All Best Sellers →</a>
+        </div>
         
-        <footer>
-            <!-- Show more button for mobile view -->
-        </footer>
+        <div class="custom-scrollbar-container">
+            <div id="product-container" class="product-grid scroll-container space-x-6 pb-2 md:pb-14 -mx-2 px-2">
+                <!-- Product cards will be dynamically inserted here -->
+            </div>
+            <div class="custom-scrollbar-track">
+                <div class="custom-scrollbar-thumb"></div>
+            </div>
+        </div>
+        
+        <div class="flex justify-center mt-6">
+            <button id="show-more-btn" class="md:hidden bg-[#1C1D1D] text-white font-semibold w-full py-4 transition duration-300 transform hover:scale-105 poppins rounded-[100px]">
+                Show More
+            </button>
+        </div>
     </div>
 
-    <!-- Font Awesome for star icons -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    
-    <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>

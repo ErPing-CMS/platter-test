@@ -1,12 +1,3 @@
-// Product data structure
-// - id
-// - name
-// - price
-// - images
-// - badges
-// - rating
-// - reviewCount
-
 const products = [
     {
         id: 1,
@@ -120,10 +111,9 @@ const products = [
     }
 ];
 
-// Helper function to generate star rating HTML
+// Function to create star rating HTML
 function createStarRating(rating) {
     let starsHTML = '';
-    // Generate filled stars for rating value
     for (let i = 1; i <= 5; i++) {
         if (i <= rating) {
             starsHTML += '<i class="fas fa-star"></i>';
@@ -134,42 +124,40 @@ function createStarRating(rating) {
     return starsHTML;
 }
 
-// Product card element function
-function createProductCard(product) {
-    // Main card container
+// Function to create a product card
+function createProductCard(product, isVisible = true) {
     const card = document.createElement('div');
-    card.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg';
+    card.className = `product-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg ${isVisible ? 'block' : 'hidden md:block'}`;
     
-    // Badge HTML
+    // Create badge HTML
     let badgeHTML = '';
     if (product.isBestSeller) {
-        badgeHTML += '<span class="absolute top-2 left-2 bg-white rounded-full text-[10px] text-black font-bebas px-3 py-1">BEST SELLER</span>';
+        badgeHTML += '<span class="absolute top-2 left-2 bg-white rounded-[100px] text-[10px] text-black bebas-neue px-3 py-1">BEST SELLER</span>';
     }
     if (product.hasDiscount) {
-        badgeHTML += '<span class="absolute top-2 right-2 bg-brand-save rounded-full text-[10px] text-white font-bebas px-3 py-1">SAVE 15%</span>';
+        badgeHTML += '<span class="absolute top-2 right-2 save-badge rounded-[100px] text-[10px] bebas-neue px-3 py-1">SAVE 15%</span>';
     }
     
-    // Product card content
     card.innerHTML = `
         ${badgeHTML}
-        <div class="relative overflow-hidden">
+        <div class="relative overflow-hidden image-container">
             <img 
                 src="${product.primaryImage}" 
                 alt="${product.name}" 
-                class="w-full h-80 object-cover product-image transition-all duration-500"
+                class="w-full h-full object-cover product-image transition-all duration-500"
                 data-primary="${product.primaryImage}"
                 data-secondary="${product.secondaryImage}"
             >
         </div>
         <div class="p-4">
-            <h3 class="font-bebas text-xl mb-2 tracking-wider text-brand-dark">${product.name}</h3>
+            <h3 class="product-title bebas-neue mb-2 tracking-[1px] text-[#1c1d1d]">${product.name}</h3>
             <div class="flex items-center mb-2">
-                <div class="text-black flex gap-1">
+                <div class="star-rating gap-[2px] flex">
                     ${createStarRating(product.rating)}
                 </div>
-                <span class="text-brand-review text-sm font-poppins ml-2">${product.reviewCount.toLocaleString()} Reviews</span>
+                <span class="reviews-text review-text poppins ml-2">${product.reviewCount.toLocaleString()} Reviews</span>
             </div>
-            <p class="text-brand-dark font-poppins font-bold">${product.price}</p>
+            <p class="text-[#1c1d1d] price-text poppins font-bold">${product.price}</p>
         </div>
     `;
     
@@ -192,7 +180,198 @@ function createProductCard(product) {
     return card;
 }
 
-// DOM ready event listener
+// Function to render product cards
+function renderProducts() {
+    const container = document.getElementById('product-container');
+    container.innerHTML = '';
+    
+    products.forEach((product, index) => {
+        // On mobile, only show first 4 products initially
+        const isVisible = index < 4;
+        const card = createProductCard(product, isVisible);
+        container.appendChild(card);
+    });
+}
+
+// Function to show all products with animation
+function showAllProducts() {
+    const hiddenCards = document.querySelectorAll('.product-card.hidden');
+    
+    hiddenCards.forEach((card, index) => { 
+        card.classList.remove('hidden');
+         
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+         
+        void card.offsetWidth;
+         
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    });
+    
+    // Hide the show more button with fade out effect
+    const showMoreBtn = document.getElementById('show-more-btn');
+    showMoreBtn.style.transition = 'opacity 0.3s ease';
+    showMoreBtn.style.opacity = '0';
+    
+    setTimeout(() => {
+        showMoreBtn.style.display = 'none';
+    }, 300);
+}
+ 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Product data initialized with', products.length, 'products'); 
+    renderProducts();
+    
+    // Add event listener to show more button
+    const showMoreBtn = document.getElementById('show-more-btn');
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', showAllProducts);
+    }
+    
+    // Initialize custom scrollbar
+    initCustomScrollbar();
+    
+    // Add Font Awesome for star icons
+    const fontAwesome = document.createElement('link');
+    fontAwesome.rel = 'stylesheet';
+    fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+    document.head.appendChild(fontAwesome);
 });
+
+// Custom Scrollbar Implementation
+function initCustomScrollbar() {
+    const scrollContainer = document.querySelector('.scroll-container');
+    const scrollbarContainer = document.querySelector('.custom-scrollbar-container');
+    const scrollbarTrack = document.querySelector('.custom-scrollbar-track');
+    const scrollbarThumb = document.querySelector('.custom-scrollbar-thumb');
+    
+    if (!scrollContainer || !scrollbarContainer || !scrollbarTrack || !scrollbarThumb) {
+        return;
+    }
+    
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let thumbLeft = 0;
+     
+    function updateScrollbar() {
+        const containerWidth = scrollContainer.clientWidth;
+        const contentWidth = scrollContainer.scrollWidth;
+        const scrollLeft = scrollContainer.scrollLeft;
+         
+        const thumbWidth = Math.max((containerWidth / contentWidth) * containerWidth, 30);
+         
+        const maxThumbLeft = containerWidth - thumbWidth;
+        const thumbLeftPosition = (scrollLeft / (contentWidth - containerWidth)) * maxThumbLeft;
+         
+        scrollbarThumb.style.width = thumbWidth + 'px';
+        scrollbarThumb.style.left = thumbLeftPosition + 'px';
+         
+        if (contentWidth <= containerWidth) {
+            scrollbarTrack.style.display = 'none';
+        } else {
+            scrollbarTrack.style.display = 'block';
+        }
+    }
+     
+    scrollContainer.addEventListener('scroll', updateScrollbar);
+     
+    window.addEventListener('resize', updateScrollbar);
+     
+    updateScrollbar();
+     
+    scrollbarContainer.addEventListener('mouseenter', () => {
+        scrollbarContainer.classList.add('scrolling');
+    });
+    
+    scrollbarContainer.addEventListener('mouseleave', () => {
+        if (!isDragging) {
+            scrollbarContainer.classList.remove('scrolling');
+        }
+    });
+    
+    // Handle thumb drag
+    scrollbarThumb.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        scrollLeft = scrollContainer.scrollLeft;
+        thumbLeft = parseFloat(scrollbarThumb.style.left) || 0;
+        
+        scrollbarContainer.classList.add('scrolling');
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const deltaX = e.clientX - startX;
+        const containerWidth = scrollContainer.clientWidth;
+        const contentWidth = scrollContainer.scrollWidth;
+        const thumbWidth = parseFloat(scrollbarThumb.style.width);
+        const maxThumbLeft = containerWidth - thumbWidth;
+        
+        // Calculate new thumb position
+        const newThumbLeft = Math.max(0, Math.min(maxThumbLeft, thumbLeft + deltaX));
+        
+        // Calculate corresponding scroll position
+        const scrollRatio = newThumbLeft / maxThumbLeft;
+        const newScrollLeft = scrollRatio * (contentWidth - containerWidth);
+        
+        scrollContainer.scrollLeft = newScrollLeft;
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            scrollbarContainer.classList.remove('scrolling');
+        }
+    });
+     
+    let touchStartX = 0;
+    let touchScrollLeft = 0;
+    let isTouching = false;
+    
+    scrollContainer.addEventListener('touchstart', (e) => {
+        isTouching = true;
+        scrollbarContainer.classList.add('touching');
+        touchStartX = e.touches[0].clientX;
+        touchScrollLeft = scrollContainer.scrollLeft;
+    });
+    
+    scrollContainer.addEventListener('touchmove', (e) => {
+        if (!isTouching) return;
+        
+        const touchX = e.touches[0].clientX;
+        const deltaX = touchStartX - touchX;
+        scrollContainer.scrollLeft = touchScrollLeft + deltaX;
+    });
+    
+    scrollContainer.addEventListener('touchend', () => {
+        setTimeout(() => {
+            isTouching = false;
+            scrollbarContainer.classList.remove('touching');
+        }, 300);
+    });
+    
+    // Handle track clicks
+    scrollbarTrack.addEventListener('click', (e) => {
+        if (e.target === scrollbarThumb) return;
+        
+        const trackRect = scrollbarTrack.getBoundingClientRect();
+        const clickX = e.clientX - trackRect.left;
+        const thumbWidth = parseFloat(scrollbarThumb.style.width);
+        const containerWidth = scrollContainer.clientWidth;
+        const contentWidth = scrollContainer.scrollWidth;
+        
+        const newThumbLeft = Math.max(0, Math.min(containerWidth - thumbWidth, clickX - thumbWidth / 2));
+        
+        const scrollRatio = newThumbLeft / (containerWidth - thumbWidth);
+        const newScrollLeft = scrollRatio * (contentWidth - containerWidth);
+        
+        scrollContainer.scrollTo({
+            left: newScrollLeft,
+            behavior: 'smooth'
+        });
+    });
+}
