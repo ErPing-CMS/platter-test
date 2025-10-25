@@ -2,6 +2,14 @@
 
 A responsive "Best Sellers" product gallery built with HTML, JavaScript, and TailwindCSS that meets all specified requirements.
 
+## Shopify Section Implementation
+
+This project also includes files for implementing the Best Sellers gallery as a Shopify section:
+- `best-sellers-section.liquid` - The main section template
+- `best-sellers-section.js` - JavaScript for interactivity
+- `best-sellers-section.css` - Custom styling for the section
+- `shopify-preview.html` - Preview of the section in a Shopify-like environment
+
 ## Features
 
 1. Custom fonts:
