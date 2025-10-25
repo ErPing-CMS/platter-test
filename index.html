@@ -4,8 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Sellers Product Gallery</title>
+    
+    <!-- Import TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Import Required Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom font classes */
+        .font-source-serif { font-family: 'Source Serif Pro', serif; }
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        
+        /* Brand color palette */
+        :root {
+            --brand-dark: #231F20;
+            --brand-link: #5C553A;
+            --brand-save: #5C7962;
+            --brand-review: #707070;
+        }
+        
+        /* Base styles for the project */
+        .container {
+            @apply mx-auto px-4 py-8 max-w-7xl;
+        }
+    </style>
 </head>
-<body> 
+<body>
     <!-- 
         Project structure:
         - Header with title and shop link
@@ -14,10 +40,12 @@
     -->
     <div class="container">
         <header>
-            <h1>Best Sellers</h1> 
+            <h1>Best Sellers</h1>
+            <!-- Shop link -->
         </header>
         
-        <main> 
+        <main>
+            <!-- Horizontal scrolling product cards -->
             <div id="product-gallery">
                 <!-- Horizontal scrolling product cards -->
             </div>
