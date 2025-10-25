@@ -147,6 +147,7 @@ function createProductCard(product, isVisible = true) {
                 class="w-full h-full object-cover product-image transition-all duration-500"
                 data-primary="${product.primaryImage}"
                 data-secondary="${product.secondaryImage}"
+                loading="lazy"
             >
         </div>
         <div class="p-4">
@@ -161,39 +162,44 @@ function createProductCard(product, isVisible = true) {
         </div>
     `;
     
-    // Add hover effect to image
     const img = card.querySelector('.product-image');
+    
+    let hoverTimeout;
     img.addEventListener('mouseenter', function() {
+        cancelAnimationFrame(hoverTimeout);
         this.classList.add('opacity-90');
-        setTimeout(() => {
+        hoverTimeout = requestAnimationFrame(() => {
             this.src = this.dataset.secondary;
-        }, 100);
+        });
     });
     
     img.addEventListener('mouseleave', function() {
+        cancelAnimationFrame(hoverTimeout);
         this.classList.remove('opacity-90');
-        setTimeout(() => {
+        hoverTimeout = requestAnimationFrame(() => {
             this.src = this.dataset.primary;
-        }, 100);
+        });
     });
     
     // Add touch events for mobile
+    let touchTimeout;
     img.addEventListener('touchstart', function(e) { 
         e.preventDefault();
         this.classList.add('opacity-90');
-        setTimeout(() => {
+        cancelAnimationFrame(touchTimeout);
+        touchTimeout = requestAnimationFrame(() => {
             this.src = this.dataset.secondary;
-        }, 100);
+        });
     });
     
     img.addEventListener('touchend', function() {
         this.classList.remove('opacity-90');
-        setTimeout(() => {
+        cancelAnimationFrame(touchTimeout);
+        touchTimeout = requestAnimationFrame(() => {
             this.src = this.dataset.primary;
-        }, 100);
+        });
     });
     
-    // Add click effect for better feedback
     card.addEventListener('click', function() {
         this.style.transform = 'scale(0.98)';
         setTimeout(() => {
@@ -209,6 +215,8 @@ function renderProducts() {
     const container = document.getElementById('product-container');
     container.innerHTML = '';
     
+    const fragment = document.createDocumentFragment();
+    
     products.forEach((product, index) => {
         // On mobile, only show first 4 products initially
         const isVisible = index < 4;
@@ -217,14 +225,18 @@ function renderProducts() {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
          
-        container.appendChild(card);
+        fragment.appendChild(card);
          
-        setTimeout(() => {
-            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 100);
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
     });
+    
+    container.appendChild(fragment);
 }
 
 // Function to show all products with animation
@@ -239,11 +251,13 @@ function showAllProducts() {
          
         void card.offsetWidth;
           
-        setTimeout(() => {
-            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 100);
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
     });
      
     // Hide the show more button with fade out effect
