@@ -134,7 +134,65 @@ function createStarRating(rating) {
     return starsHTML;
 }
 
+// Product card element function
+function createProductCard(product) {
+    // Main card container
+    const card = document.createElement('div');
+    card.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg';
+    
+    // Badge HTML
+    let badgeHTML = '';
+    if (product.isBestSeller) {
+        badgeHTML += '<span class="absolute top-2 left-2 bg-white rounded-full text-[10px] text-black font-bebas px-3 py-1">BEST SELLER</span>';
+    }
+    if (product.hasDiscount) {
+        badgeHTML += '<span class="absolute top-2 right-2 bg-brand-save rounded-full text-[10px] text-white font-bebas px-3 py-1">SAVE 15%</span>';
+    }
+    
+    // Product card content
+    card.innerHTML = `
+        ${badgeHTML}
+        <div class="relative overflow-hidden">
+            <img 
+                src="${product.primaryImage}" 
+                alt="${product.name}" 
+                class="w-full h-80 object-cover product-image transition-all duration-500"
+                data-primary="${product.primaryImage}"
+                data-secondary="${product.secondaryImage}"
+            >
+        </div>
+        <div class="p-4">
+            <h3 class="font-bebas text-xl mb-2 tracking-wider text-brand-dark">${product.name}</h3>
+            <div class="flex items-center mb-2">
+                <div class="text-black flex gap-1">
+                    ${createStarRating(product.rating)}
+                </div>
+                <span class="text-brand-review text-sm font-poppins ml-2">${product.reviewCount.toLocaleString()} Reviews</span>
+            </div>
+            <p class="text-brand-dark font-poppins font-bold">${product.price}</p>
+        </div>
+    `;
+    
+    // Add hover effect to image
+    const img = card.querySelector('.product-image');
+    img.addEventListener('mouseenter', function() {
+        this.classList.add('opacity-90');
+        setTimeout(() => {
+            this.src = this.dataset.secondary;
+        }, 100);
+    });
+    
+    img.addEventListener('mouseleave', function() {
+        this.classList.remove('opacity-90');
+        setTimeout(() => {
+            this.src = this.dataset.primary;
+        }, 100);
+    });
+    
+    return card;
+}
+
 // DOM ready event listener
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Product data initialized with', products.length, 'products');
+    console.log('Product data initialized with', products.length, 'products'); 
 });
